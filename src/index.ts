@@ -6,8 +6,8 @@ const app = Express();
 const route = Express.Router();
 app.use(
   cors({
-    // origin: ["http://localhost:3000", "http://localhost:8081"],
-    origin: "*",
+    // origin: "*",
+    origin: ["http://localhost:8081", "exp://192.168.2.14:8081"], // Replace with your actual origins
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
