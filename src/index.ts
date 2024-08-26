@@ -1,7 +1,7 @@
 import Express from "express";
 import cors from "cors";
 
-const port = 5000;
+const port = 5173;
 const app = Express();
 const route = Express.Router();
 app.use(
