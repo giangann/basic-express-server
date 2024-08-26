@@ -14,9 +14,9 @@ app.use(
 );
 
 // default route
-// app.use("/", (req, res) => {
-//   res.json("Hello, basic express server");
-// });
+route.get("/", (req, res) => {
+  res.json("Hello, basic express server");
+});
 
 route.get("/me", (req, res) => {
   const mockData = {
