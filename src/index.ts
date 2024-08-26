@@ -22,8 +22,16 @@ route.get("/me", (req, res) => {
   const mockData = {
     id: 1,
     name: "JohnDue",
+    auth: "1-JohnDue-auth-value",
   };
   res.send(mockData);
+});
+route.get("/auth", (req, res) => {
+  const token = req.headers.authorization;
+  console.log("token", token);
+  if (!token) res.status(500).json("No token");
+
+  res.json(token);
 });
 
 // Use the route
