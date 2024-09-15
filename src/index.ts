@@ -33,6 +33,25 @@ route.get("/auth", (req, res) => {
 
   res.json(token);
 });
+route.post("/auth/login", (req, res) => {
+  const specialistToken =
+    "eyJhbGciOiJIUzI1NiJ9.eyJhZGRyZXNzIjoiTm8gYWRkIiwicm9sZSI6IkNodXnDqm4gdmnDqm4iLCJwaG9uZSI6IjAwMDAwMDAwMDAwIiwibmFtZSI6Ik5ndXnhu4VuIFbEg24gS2jDoWkiLCJlbWFpbCI6Im52a0BnbWFpbC5jb20iLCJzdWIiOiIwMDAwMTExMTExMTEiLCJpYXQiOjE3MjYzOTQ4NDMsImV4cCI6MTcyNjQ4MTI0M30.g3yHOT0VnmdRRQbzx_ktzOFBAooRQIyfCkV7MMmI31U";
+  try {
+    const idCard = req.body?.identifyCard ?? "";
+    const password = req.body?.password ?? "";
+
+    if (idCard !== "000011111111" || password !== "!Khai01011970") throw new Error("Wrong cridentials");
+
+    res.status(200).send({
+      statusCode: 200,
+      data: {
+        token: specialistToken,
+      },
+    });
+  } catch (error: any) {
+    res.status(400).send({ statusCode: 400, error: error.message ?? "Unknown Error" });
+  }
+});
 
 // Use the route
 app.use("/", route);
