@@ -2,6 +2,19 @@ import Express from "express";
 import cors from "cors";
 
 const port = 5001;
+const specialistToken =
+  "eyJhbGciOiJIUzI1NiJ9.eyJhZGRyZXNzIjoiTm8gYWRkIiwicm9sZSI6IkNodXnDqm4gdmnDqm4iLCJwaG9uZSI6IjAwMDAwMDAwMDAwIiwibmFtZSI6Ik5ndXnhu4VuIFbEg24gS2jDoWkiLCJlbWFpbCI6Im52a0BnbWFpbC5jb20iLCJzdWIiOiIwMDAwMTExMTExMTEiLCJpYXQiOjE3MjYzOTQ4NDMsImV4cCI6MTcyNjQ4MTI0M30.g3yHOT0VnmdRRQbzx_ktzOFBAooRQIyfCkV7MMmI31U";
+const specialistUserInfo = {
+  user: {
+    name: "Nguyễn Văn Khái",
+    email: "nvk@gmail.com",
+    address: "No add",
+    phone: "00000000000",
+    identifyCard: "000011111111",
+    roleName: "Chuyên viên",
+    roleCode: "SPECIALIST",
+  },
+};
 const app = Express();
 const route = Express.Router();
 app.use(Express.json());
@@ -17,6 +30,20 @@ app.use(
 // default route
 route.get("/", (req, res) => {
   res.json("Hello, basic express server");
+});
+
+route.get("/check", (req, res) => {
+  try {
+    res.status(200).send({
+      statusCode: 200,
+      data: "Checking success, welcome to my basic-express-server",
+    });
+  } catch (error: any) {
+    res.status(500).send({
+      statusCode: 401,
+      error: error?.message ?? "Unknown Error",
+    });
+  }
 });
 
 route.get("/me", (req, res) => {
@@ -35,8 +62,6 @@ route.get("/auth", (req, res) => {
   res.json(token);
 });
 route.post("/auth/login", (req, res) => {
-  const specialistToken =
-    "eyJhbGciOiJIUzI1NiJ9.eyJhZGRyZXNzIjoiTm8gYWRkIiwicm9sZSI6IkNodXnDqm4gdmnDqm4iLCJwaG9uZSI6IjAwMDAwMDAwMDAwIiwibmFtZSI6Ik5ndXnhu4VuIFbEg24gS2jDoWkiLCJlbWFpbCI6Im52a0BnbWFpbC5jb20iLCJzdWIiOiIwMDAwMTExMTExMTEiLCJpYXQiOjE3MjYzOTQ4NDMsImV4cCI6MTcyNjQ4MTI0M30.g3yHOT0VnmdRRQbzx_ktzOFBAooRQIyfCkV7MMmI31U";
   try {
     const idCard = req.body?.identifyCard ?? "";
     const password = req.body?.password ?? "";
@@ -50,7 +75,21 @@ route.post("/auth/login", (req, res) => {
       },
     });
   } catch (error: any) {
-    res.status(400).send({ statusCode: 400, error: error.message ?? "Unknown Error" });
+    res.status(401).send({ statusCode: 401, error: error.message ?? "Unknown Error" });
+  }
+});
+
+route.get("/auth/verify-token", (req, res) => {
+  try {
+    const token = req.query?.token ?? "";
+    if (token !== specialistToken) throw new Error("Invalid token!");
+
+    res.status(200).send({
+      statusCode: 200,
+      data: specialistUserInfo,
+    });
+  } catch (error: any) {
+    res.status(401).send({ statusCode: 401, error: error.message ?? "Unknown Error" });
   }
 });
 
