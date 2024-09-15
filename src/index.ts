@@ -82,8 +82,7 @@ route.post("/auth/login", (req, res) => {
 route.get("/auth/verify-token", (req, res) => {
   try {
     const token = req.query?.token ?? "";
-    console.log("request query params: key=token, value=", token, token === specialistToken);
-    if (token !== specialistToken) throw new Error("Invalid token!");
+    if (!token) throw new Error("Invalid token!");
 
     res.status(200).send({
       statusCode: 200,
