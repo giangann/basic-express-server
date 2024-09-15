@@ -4,6 +4,7 @@ import cors from "cors";
 const port = 5001;
 const app = Express();
 const route = Express.Router();
+app.use(Express.json());
 app.use(
   cors({
     // origin: "*",
