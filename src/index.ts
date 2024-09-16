@@ -17,16 +17,13 @@ const specialistUserInfo = {
 };
 const app = Express();
 const route = Express.Router();
-
 app.use(Express.json());
-
-// CORS Middleware
 app.use(
   cors({
-    origin: ["http://localhost:8081", "exp://192.168.2.14:8081", "http://localhost:5173"], // Replace with actual origins
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "ngrok-skip-browser-warning"],
-    credentials: true,
+    // origin: "*",
+    origin: ["http://localhost:8081", "exp://192.168.2.14:8081"], // Replace with your actual origins
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 

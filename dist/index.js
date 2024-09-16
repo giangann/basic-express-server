@@ -21,12 +21,11 @@ const specialistUserInfo = {
 const app = (0, express_1.default)();
 const route = express_1.default.Router();
 app.use(express_1.default.json());
-// CORS Middleware
 app.use((0, cors_1.default)({
-    origin: ["http://localhost:8081", "exp://192.168.2.14:8081", "http://localhost:5173"], // Replace with actual origins
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "ngrok-skip-browser-warning"],
-    credentials: true,
+    // origin: "*",
+    origin: ["http://localhost:8081", "exp://192.168.2.14:8081"], // Replace with your actual origins
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 }));
 // Handle CORS Preflight OPTIONS request
 app.use((req, res, next) => {
