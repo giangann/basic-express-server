@@ -21,11 +21,24 @@ const specialistUserInfo = {
 const app = (0, express_1.default)();
 const route = express_1.default.Router();
 app.use(express_1.default.json());
+app.use((req, res, next) => {
+    const origin = req.get('origin');
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,HEAD,OPTIONS,PUT,PATCH,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma, Access-Control-Request-Method, Access-Control-Allow-Headers, Access-Control-Request-Headers, ngrok-skip-browser-warning, Ngrok-Skip-Browser-Warning');
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(204);
+    }
+    else {
+        next();
+    }
+});
 app.use((0, cors_1.default)({
     // origin: "*",
-    origin: ["http://localhost:8081", "exp://192.168.2.14:8081"], // Replace with your actual origins
+    origin: ["http://localhost:8081", "exp://192.168.2.14:8081", "http://localhost:5173"], // Replace with your actual origins
     methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "ngrok-skip-browser-warning"],
 }));
 // default route
 route.get("/", (req, res) => {
