@@ -21,71 +21,40 @@ const specialistUserInfo = {
 const app = (0, express_1.default)();
 const route = express_1.default.Router();
 app.use(express_1.default.json());
-app.use((req, res, next) => {
-    const origin = req.get('origin');
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Methods', 'GET,POST,HEAD,OPTIONS,PUT,PATCH,DELETE');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma, Access-Control-Request-Method, Access-Control-Allow-Headers, Access-Control-Request-Headers, ngrok-skip-browser-warning, Ngrok-Skip-Browser-Warning');
-    if (req.method === 'OPTIONS') {
-        res.sendStatus(204);
-    }
-    else {
-        next();
-    }
-});
+// CORS Middleware
 app.use((0, cors_1.default)({
-    // origin: "*",
-    origin: ["http://localhost:8081", "exp://192.168.2.14:8081", "http://localhost:5173"], // Replace with your actual origins
-    methods: ["GET", "POST"],
+    origin: ["http://localhost:8081", "exp://192.168.2.14:8081", "http://localhost:5173"], // Replace with actual origins
+    methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "ngrok-skip-browser-warning"],
+    credentials: true,
 }));
-// default route
+// Handle CORS Preflight OPTIONS request
+app.use((req, res, next) => {
+    if (req.method === "OPTIONS") {
+        // Handle OPTIONS requests and send 204 No Content response
+        res.header("Access-Control-Allow-Origin", req.get("origin"));
+        res.header("Access-Control-Allow-Credentials", "true");
+        res.header("Access-Control-Allow-Methods", "GET,POST,HEAD,OPTIONS,PUT,PATCH,DELETE");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma, Access-Control-Request-Method, Access-Control-Allow-Headers, Access-Control-Request-Headers, ngrok-skip-browser-warning");
+        return res.sendStatus(204);
+    }
+    next();
+});
+// Default route
 route.get("/", (req, res) => {
     res.json("Hello, basic express server");
 });
-route.get("/check", (req, res) => {
-    var _a;
-    try {
-        res.status(200).send({
-            statusCode: 200,
-            data: "Checking success, welcome to my basic-express-server",
-        });
-    }
-    catch (error) {
-        res.status(500).send({
-            statusCode: 401,
-            error: (_a = error === null || error === void 0 ? void 0 : error.message) !== null && _a !== void 0 ? _a : "Unknown Error",
-        });
-    }
-});
-route.get("/me", (req, res) => {
-    const mockData = {
-        id: 1,
-        name: "JohnDue",
-        auth: "1-JohnDue-auth-value",
-    };
-    res.send(mockData);
-});
-route.get("/auth", (req, res) => {
-    const token = req.headers.authorization;
-    console.log("token", token);
-    if (!token)
-        res.status(500).json("No token");
-    res.json(token);
-});
+// Authorization-related routes
 route.post("/auth/login", (req, res) => {
     var _a, _b, _c, _d, _e;
     try {
         const idCard = (_b = (_a = req.body) === null || _a === void 0 ? void 0 : _a.identifyCard) !== null && _b !== void 0 ? _b : "";
         const password = (_d = (_c = req.body) === null || _c === void 0 ? void 0 : _c.password) !== null && _d !== void 0 ? _d : "";
         if (idCard !== "000011111111" || password !== "!Khai01011970")
-            throw new Error("Wrong cridentials");
+            throw new Error("Wrong credentials");
         res.status(200).send({
             statusCode: 200,
-            data: {
-                token: specialistToken,
-            },
+            data: { token: specialistToken },
         });
     }
     catch (error) {
@@ -107,9 +76,21 @@ route.get("/auth/verify-token", (req, res) => {
         res.status(401).send({ statusCode: 401, error: (_c = error.message) !== null && _c !== void 0 ? _c : "Unknown Error" });
     }
 });
+// Other routes
+route.get("/me", (req, res) => {
+    const mockData = { id: 1, name: "JohnDue", auth: "1-JohnDue-auth-value" };
+    res.send(mockData);
+});
+route.get("/auth", (req, res) => {
+    const token = req.headers.authorization;
+    console.log("token", token);
+    if (!token)
+        return res.status(500).json("No token");
+    res.json(token);
+});
 // Use the route
 app.use("/", route);
-// start
+// Start server
 app.listen(port, () => {
     console.log("Express app running on port", port);
 });
